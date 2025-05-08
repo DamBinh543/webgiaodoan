@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Cart;
 use App\Models\Order;
 use Illuminate\Http\Request;
 
@@ -18,21 +18,22 @@ class OrderController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $data = $request->validate([
-            'order_id' => 'required|string|unique:orders,order_id',
-            'customer' => 'required|string',
-            'address' => 'required|string',
-            'phone' => 'required|char:10',
-            'total_money' => 'required|numeric',
-            'payment_method' => 'required|string',
-            'is_payment' => 'required|boolean',
-            'cart_id' => 'required|string|exists:carts,cart_id', 
-            'note' => 'nullable|string',
-        ]);
+{
+    $data = $request->validate([
+        'order_id' => 'required|string|unique:orders,order_id',
+        'customer' => 'required|string',
+        'address' => 'required|string',
+        'phone' => 'required|digits:10',
+        'total_money' => 'required|numeric',
+        'payment_method' => 'required|string',
+        'is_payment' => 'required|boolean',
+        'cart_id' => 'required|string|exists:carts,cart_id',
+        'note' => 'nullable|string',
+        'delivery_time' => 'required|date_format:Y-m-d H:i:s', 
+    ]);
+    return Order::create($data);
+}
 
-        return Order::create($data);
-    }
 
     public function update(Request $request, $id)
     {
@@ -46,5 +47,22 @@ class OrderController extends Controller
     {
         Order::destroy($id);
         return response()->json(['message' => 'Đơn hàng đã xóa']);
+    }
+
+    public function getByAccount($account_id)
+    {
+        // Lấy tất cả cart_id từ carts theo account_id
+        $cartIds = Cart::where('account_id', $account_id)->pluck('cart_id');
+    
+        // Lấy tất cả đơn hàng có cart_id nằm trong danh sách trên và lấy thông tin sản phẩm liên quan
+        $orders = Order::with(['cart.items.product'])
+                        ->whereIn('cart_id', $cartIds)
+                        ->get();
+    
+        if ($orders->isEmpty()) {
+            return response()->json(['message' => 'Không có đơn hàng nào'], 404);
+        }
+    
+        return response()->json($orders);
     }
 }

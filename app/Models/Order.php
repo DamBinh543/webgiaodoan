@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\Cart;
 class Order extends Model
 {
     protected $primaryKey = 'order_id';
@@ -21,7 +21,12 @@ class Order extends Model
         'is_payment',
         'cart_id',
         'note',
+        'delivery_time',
     ];
 
     use HasFactory;
+    public function cart()
+{
+    return $this->belongsTo(Cart::class, 'cart_id', 'cart_id');
+}
 }

@@ -20,13 +20,13 @@ return new class extends Migration
             $table->string('payment_method');
             $table->boolean('is_payment');
             $table->string('cart_id');
-            $table->text('note');
+            $table->text('note')->nullable();
+            $table->dateTime('delivery_time');
             $table->timestamps();
         
             $table->foreign('cart_id')->references('cart_id')->on('carts');
         });
     }
-
     /**
      * Reverse the migrations.
      */

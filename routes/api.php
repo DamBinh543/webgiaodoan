@@ -14,3 +14,4 @@ Route::apiResource('carts', CartController::class);
 Route::apiResource('comments', CommentController::class);
 Route::apiResource('items', ItemController::class);
 Route::apiResource('orders', OrderController::class);
+Route::get('orders/account/{account_id}', [OrderController::class, 'getByAccount']);

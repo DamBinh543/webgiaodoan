@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('comment_id')->primary();
             $table->integer('rate');
             $table->text('content');
-            $table->string('product_id');
+            $table->integer('product_id');
             $table->string('account_id'); 
             $table->timestamps();
         

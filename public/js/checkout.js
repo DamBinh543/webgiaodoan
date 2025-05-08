@@ -1,156 +1,199 @@
-const PHIVANCHUYEN = 30000;
+const PHIVANCHUYEN = 0;
 let priceFinal = document.getElementById("checkout-cart-price-final");
 // Trang thanh toan
-function thanhtoanpage(option,product) {
-    // Xu ly ngay nhan hang
-    let today = new Date();
-    let ngaymai = new Date();
-    let ngaykia = new Date();
-    ngaymai.setDate(today.getDate() + 1);
-    ngaykia.setDate(today.getDate() + 2);
-    let dateorderhtml = `<a href="javascript:;" class="pick-date active" data-date="${today}">
-        <span class="text">Hôm nay</span>
-        <span class="date">${today.getDate()}/${today.getMonth() + 1}</span>
-        </a>
-        <a href="javascript:;" class="pick-date" data-date="${ngaymai}">
-            <span class="text">Ngày mai</span>
-            <span class="date">${ngaymai.getDate()}/${ngaymai.getMonth() + 1}</span>
-        </a>
+function thanhtoanpage(option, product = null) {
+    setupNgayGiao();
+    handleDeliveryMethod(option, product);
+    renderThanhTien(option, product);
+    handleCompleteCheckout(option, product);
+}
+function setupNgayGiao() {
+    const today = new Date();
+    const yyyyMmDd = today.toISOString().split('T')[0];
+    const displayDate = `${today.getDate()}/${today.getMonth() + 1}`;
 
-        <a href="javascript:;" class="pick-date" data-date="${ngaykia}">
-            <span class="text">Ngày kia</span>
-            <span class="date">${ngaykia.getDate()}/${ngaykia.getMonth() + 1}</span>
-    </a>`
-    document.querySelector('.date-order').innerHTML = dateorderhtml;
-    let pickdate = document.getElementsByClassName('pick-date')
-    for(let i = 0; i < pickdate.length; i++) {
-        pickdate[i].onclick = function () {
-            document.querySelector(".pick-date.active").classList.remove("active");
-            this.classList.add('active');
-        }
+    // Chỉ hiển thị duy nhất lựa chọn Hôm nay
+    const dateOrderHtml = `
+        <a href="javascript:;" class="pick-date active" data-date="${yyyyMmDd}">
+            <span class="text">Hôm nay</span>
+            <span class="date">${displayDate}</span>
+        </a>`;
+
+    document.querySelector('.date-order').innerHTML = dateOrderHtml;
+
+    // Gán giá trị mặc định ngày giao là hôm nay
+    selectedDeliveryDate = yyyyMmDd;
+
+    // Nếu vẫn muốn bắt sự kiện click (dùng cho trường hợp trong tương lai có thêm lựa chọn)
+    document.querySelectorAll('.pick-date').forEach(dateBtn => {
+        dateBtn.onclick = () => {
+            document.querySelector('.pick-date.active')?.classList.remove('active');
+            dateBtn.classList.add('active');
+            selectedDeliveryDate = dateBtn.getAttribute("data-date");
+            console.log("Ngày giao hàng đã chọn:", selectedDeliveryDate);
+        };
+    });
+}
+
+
+function handleDeliveryMethod(option, product) {
+    const giaotannoi = document.querySelector('#giaotannoi');
+    const tudenlay = document.querySelector('#tudenlay');
+    const chkShip = document.querySelectorAll(".chk-ship");
+    const tudenlayGroup = document.querySelector('#tudenlay-group');
+    const deliveryTimeSection = document.querySelector('.delivery-time-section');
+    const pickupTimeSection = document.querySelector('.pickup-time-section');
+
+    tudenlay.onclick = () => {
+        giaotannoi.classList.remove("active");
+        tudenlay.classList.add("active");
+        // Ẩn phần giao tận nơi
+        chkShip.forEach(i => i.style.display = "none");
+        deliveryTimeSection.style.display = "none"; 
+        // Hiện phần chọn chi nhánh và thời gian lấy hàng
+        tudenlayGroup.style.display = "block";
+        pickupTimeSection.style.display = "block";
+        selectedDeliveryDate = ""; 
+        renderThanhTien(option, product);
     }
 
-    let totalBillOrder = document.querySelector('.total-bill-order');
-    let totalBillOrderHtml;
-    // Xu ly don hang
-    switch (option) {
-        case 1: // Truong hop thanh toan san pham trong gio
-            // Hien thi don hang
-            showProductCart();
-            // Tinh tien
-            totalBillOrderHtml = `<div class="priceFlx">
-            <div class="text">
-                Tiền hàng 
-                <span class="count">${getAmountCart()} món</span>
-            </div>
+    giaotannoi.onclick = () => {
+        tudenlay.classList.remove("active");
+        giaotannoi.classList.add("active");
+        // Hiện giao tận nơi, ẩn phần tự đến lấy
+        chkShip.forEach(i => i.style.display = "flex");
+        tudenlayGroup.style.display = "none";
+        // Ẩn luôn phần chọn thời gian lấy hàng
+        pickupTimeSection.style.display = "none";
+        deliveryTimeSection.style.display = "block"; 
+        renderThanhTien(option, product);
+    }
+}
+
+function renderThanhTien(option, product = null) {
+    const isGiaoTanNoi = document.querySelector('#giaotannoi')?.classList.contains('active');
+    const shipFee = isGiaoTanNoi ? PHIVANCHUYEN : 0;
+    let tongTien = 0;
+
+    if (option === 1) {
+        tongTien = getCartTotal(); 
+        showProductCart(); 
+    } else if (option === 2 && product) {
+        tongTien = product.soluong * product.price;
+        showProductBuyNow(product);
+    }
+
+    let totalBillOrderHtml = `
+        <div class="priceFlx">
+            <div class="text">Tiền hàng ${option === 2 ? `<span class="count">${product?.soluong} món</span>` : ''}</div>
             <div class="price-detail">
-                <span id="checkout-cart-total">${vnd(getCartTotal())}</span>
+                <span id="checkout-cart-total">${vnd(tongTien)}</span>
             </div>
         </div>
         <div class="priceFlx chk-ship">
             <div class="text">Phí vận chuyển</div>
             <div class="price-detail chk-free-ship">
-                <span>${vnd(PHIVANCHUYEN)}</span>
+                <span>${vnd(shipFee)}</span>
             </div>
-        </div>`;
-            // Tong tien
-            priceFinal.innerText = vnd(getCartTotal() + PHIVANCHUYEN);
-            break;
-        case 2: // Truong hop mua ngay
-            // Hien thi san pham
-            showProductBuyNow(product);
-            // Tinh tien
-            totalBillOrderHtml = `<div class="priceFlx">
-                <div class="text">
-                    Tiền hàng 
-                    <span class="count">${product.soluong} món</span>
-                </div>
-                <div class="price-detail">
-                    <span id="checkout-cart-total">${vnd(product.soluong * product.price)}</span>
-                </div>
-            </div>
-            <div class="priceFlx chk-ship">
-                <div class="text">Phí vận chuyển</div>
-                <div class="price-detail chk-free-ship">
-                    <span>${vnd(PHIVANCHUYEN)}</span>
-                </div>
-            </div>`
-            // Tong tien
-            priceFinal.innerText = vnd((product.soluong * product.price) + PHIVANCHUYEN);
-            break;
-    }
-
-    // Tinh tien
-    totalBillOrder.innerHTML = totalBillOrderHtml;
-
-    // Xu ly hinh thuc giao hang
-    let giaotannoi = document.querySelector('#giaotannoi');
-    let tudenlay = document.querySelector('#tudenlay');
-    let tudenlayGroup = document.querySelector('#tudenlay-group');
-    let chkShip = document.querySelectorAll(".chk-ship");
-    
-    tudenlay.addEventListener('click', () => {
-        giaotannoi.classList.remove("active");
-        tudenlay.classList.add("active");
-        chkShip.forEach(item => {
-            item.style.display = "none";
-        });
-        tudenlayGroup.style.display = "block";
-        switch (option) {
-            case 1:
-                priceFinal.innerText = vnd(getCartTotal());
-                break;
-            case 2:
-                priceFinal.innerText = vnd((product.soluong * product.price));
-                break;
-        }
-    })
-
-    giaotannoi.addEventListener('click', () => {
-        tudenlay.classList.remove("active");
-        giaotannoi.classList.add("active");
-        tudenlayGroup.style.display = "none";
-        chkShip.forEach(item => {
-            item.style.display = "flex";
-        });
-        switch (option) {
-            case 1:
-                priceFinal.innerText = vnd(getCartTotal() + PHIVANCHUYEN);
-                break;
-            case 2:
-                priceFinal.innerText = vnd((product.soluong * product.price) + PHIVANCHUYEN);
-                break;
-        }
-    })
-
-    // Su kien khu nhan nut dat hang
+        </div>
+    `;
+    document.querySelector('.total-bill-order').innerHTML = totalBillOrderHtml;
+    priceFinal.innerText = vnd(tongTien + shipFee);
+}
+function handleCompleteCheckout(option, product = null) {
     document.querySelector(".complete-checkout-btn").onclick = () => {
-        switch (option) {
-            case 1:
-                xulyDathang();
-                break;
-            case 2:
-                xulyDathang(product);
-                break;
-        }
+        xulyDathang(option === 1 ? undefined : product);
+    };
+}
+function dathangngay() {
+    const currentUser = JSON.parse(localStorage.getItem('currentuser'));
+    if (!currentUser) {
+        toast({ title: 'Warning', message: 'Chưa đăng nhập tài khoản !', type: 'warning', duration: 3000 });
+        return;
     }
+
+    const productInfo = document.getElementById("product-detail-content");
+    const datHangNgayBtn = productInfo.querySelector(".button-dathangngay");
+    datHangNgayBtn.onclick = () => {
+        const productId = datHangNgayBtn.getAttribute("data-product");
+        const soluong = parseInt(productInfo.querySelector(".buttons_added .input-qty").value);
+        const ghichu = productInfo.querySelector("#popup-detail-note").value || "Không có ghi chú";
+
+        const products = JSON.parse(localStorage.getItem('products'));
+        const product = products.find(item => item.id == productId);
+
+        if (product) {
+            product.soluong = soluong;
+            product.note = ghichu;
+            checkoutpage.classList.add('active');
+            thanhtoanpage(2, product);
+            closeCart();
+            body.style.overflow = "hidden";
+        }
+    };
 }
 
-// Hien thi hang trong gio
-function showProductCart() {
-    let currentuser = JSON.parse(localStorage.getItem('currentuser'));
-    let listOrder = document.getElementById("list-order-checkout");
+
+// Hiển thị giỏ hàng
+async function showProductCart() {
+    const currentuser = JSON.parse(localStorage.getItem('currentuser'));
+    const listOrder = document.getElementById("list-order-checkout");
     let listOrderHtml = '';
-    currentuser.cart.forEach(item => {
-        let product = getProduct(item);
-        listOrderHtml += `<div class="food-total">
-        <div class="count">${product.soluong}x</div>
-        <div class="info-food">
-            <div class="name-food">${product.title}</div>
-        </div>
-    </div>`
-    })
-    listOrder.innerHTML = listOrderHtml;
+
+    if (!currentuser || !currentuser.cart_id) {
+        listOrder.innerHTML = '<p>Giỏ hàng trống</p>';
+        priceFinal.innerText = vnd(0);
+        return;
+    }
+
+    try {
+        const res = await fetch(`/api/carts/${currentuser.cart_id}`);
+        if (!res.ok) throw new Error(`Lỗi server: ${res.status}`);
+
+        const data = await res.json();
+        const cartItems = data.items || [];
+        const localProducts = JSON.parse(localStorage.getItem('products')) || [];
+
+        let tongtien = 0;
+
+        if (cartItems.length === 0) {
+            listOrder.innerHTML = '<p>Giỏ hàng trống</p>';
+            priceFinal.innerText = vnd(0);
+            return;
+        }
+
+        cartItems.forEach(item => {
+            const product = item.product || localProducts.find(p => p.product_id === item.product_id);
+            if (product) {
+                const quantity = item.quantity || 0;
+                const price = parseFloat(product.price || 0);
+                tongtien += quantity * price;
+
+                listOrderHtml += `
+                  <div class="food-total">
+                      <div class="count">${quantity}x</div>
+                      <div class="info-food">
+                          <div class="name-food">${product.title}</div>
+                      </div>
+                  </div>
+              `;
+            }
+        });
+
+        listOrder.innerHTML = listOrderHtml;
+
+        // Kiểm tra hình thức giao hàng để cộng phí vận chuyển nếu cần
+        const isGiaoTanNoi = document.querySelector('#giaotannoi')?.classList.contains('active');
+        const total = tongtien + (isGiaoTanNoi ? PHIVANCHUYEN : 0);
+
+        // Cập nhật cả Tiền hàng và Tổng tiền
+        document.getElementById('checkout-cart-total').innerText = vnd(tongtien);
+        priceFinal.innerText = vnd(total);
+    } catch (error) {
+        console.error('Lỗi khi hiển thị giỏ hàng:', error);
+        listOrder.innerHTML = '<p>Không thể tải giỏ hàng</p>';
+        priceFinal.innerText = vnd(0);
+    }
 }
 
 // Hien thi hang mua ngay
@@ -175,29 +218,6 @@ nutthanhtoan.addEventListener('click', () => {
     body.style.overflow = "hidden"
 })
 
-// Đặt hàng ngay
-function dathangngay() {
-    let productInfo = document.getElementById("product-detail-content");
-    let datHangNgayBtn = productInfo.querySelector(".button-dathangngay");
-    datHangNgayBtn.onclick = () => {
-        if(localStorage.getItem('currentuser')) {
-            let productId = datHangNgayBtn.getAttribute("data-product");
-            let soluong = parseInt(productInfo.querySelector(".buttons_added .input-qty").value);
-            let notevalue = productInfo.querySelector("#popup-detail-note").value;
-            let ghichu = notevalue == "" ? "Không có ghi chú" : notevalue;
-            let products = JSON.parse(localStorage.getItem('products'));
-            let a = products.find(item => item.id == productId);
-            a.soluong = parseInt(soluong);
-            a.note = ghichu;
-            checkoutpage.classList.add('active');
-            thanhtoanpage(2,a);
-            closeCart();
-            body.style.overflow = "hidden"
-        } else {
-            toast({ title: 'Warning', message: 'Chưa đăng nhập tài khoản !', type: 'warning', duration: 3000 });
-        }
-    }
-}
 
 // Close Page Checkout
 function closecheckout() {
@@ -206,99 +226,190 @@ function closecheckout() {
 }
 
 // Thong tin cac don hang da mua - Xu ly khi nhan nut dat hang
-function xulyDathang(product) {
-    let diachinhan = "";
-    let hinhthucgiao = "";
-    let thoigiangiao = "";
-    let giaotannoi = document.querySelector("#giaotannoi");
-    let tudenlay = document.querySelector("#tudenlay");
-    let giaongay = document.querySelector("#giaongay");
-    let giaovaogio = document.querySelector("#deliverytime");
-    let currentUser = JSON.parse(localStorage.getItem('currentuser'));
-    // Hinh thuc giao & Dia chi nhan hang
-    if(giaotannoi.classList.contains("active")) {
-        diachinhan = document.querySelector("#diachinhan").value;
-        hinhthucgiao = giaotannoi.innerText;
+async function xulyDathang(product) {
+    const currentUser = JSON.parse(localStorage.getItem("currentuser"));
+    if (!currentUser) {
+        toast({ title: "Lỗi", message: "Không tìm thấy thông tin người dùng!", type: "error", duration: 3000 });
+        return;
     }
-    if(tudenlay.classList.contains("active")){
-        let chinhanh1 = document.querySelector("#chinhanh-1");
-        let chinhanh2 = document.querySelector("#chinhanh-2");
-        if(chinhanh1.checked) {
-            diachinhan = "273 An Dương Vương, Phường 3, Quận 5";
+
+    // Thu thập input
+    const tenNguoiNhan = document.querySelector("#tennguoinhan")?.value.trim();
+    const sdtNhan      = document.querySelector("#sdtnhan")?.value.trim();
+    const note         = document.querySelector(".note-order")?.value.trim() || "Không có ghi chú";
+
+    let diaChiNhan = "";
+    let hinhThucGiao = "";
+    let deliveryTime = "";
+
+    const isGiaoTanNoi = document.querySelector("#giaotannoi")?.classList.contains("active");
+    const isTuDenLay   = document.querySelector("#tudenlay")?.classList.contains("active");
+
+    if (isGiaoTanNoi) {
+        // Giao tận nơi
+        diaChiNhan = document.querySelector("#diachinhan")?.value.trim();
+        hinhThucGiao = "Giao tận nơi";
+
+        const giaoNgay    = document.querySelector("#giaongay")?.checked;
+        const giaoVaoGio  = document.querySelector("#deliverytime")?.checked;
+
+        if (giaoNgay) {
+            // Lấy giờ hiện tại VN + 1 tiếng
+            const nowVN = new Date(
+                new Date().toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' })
+            );
+            nowVN.setHours(nowVN.getHours() + 1);
+            deliveryTime = getVNDateTime(nowVN);
+        } else if (giaoVaoGio) {
+            const chosenTime = document.querySelector(".choise-time")?.value.trim();
+            if (!chosenTime) {
+                toast({ title: "Lỗi", message: "Vui lòng chọn giờ giao hàng!", type: "error", duration: 3000 });
+                return;
+            }
+            // Ngày hôm nay theo VN
+            const todayVN = getVNDateTime().slice(0, 10);
+            const sel = new Date(`${todayVN} ${chosenTime}`);
+            if (isNaN(sel.getTime())) {
+                toast({ title: "Lỗi", message: "Giờ giao hàng không hợp lệ!", type: "error", duration: 3000 });
+                return;
+            }
+            deliveryTime = getVNDateTime(sel);
         }
-        if(chinhanh2.checked) {
-            diachinhan = "04 Tôn Đức Thắng, Phường Bến Nghé, Quận 1";
+    }
+    else if (isTuDenLay) {
+        // Tự đến lấy
+        hinhThucGiao = "Tự đến lấy";
+        diaChiNhan = document.querySelector("#chinhanh-1")?.checked
+            ? "123 Nguyễn Trãi, Thanh Xuân, Hà Nội"
+            : "544 Phố Huế, Hai Bà Trưng, Hà Nội";
+
+        const pickupNow      = document.querySelector("#pickuptime-now")?.checked;
+        const pickupSchedule = document.querySelector("#pickuptime-schedule")?.checked;
+
+        if (pickupNow) {
+            const nowVN = new Date(
+                new Date().toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' })
+            );
+            nowVN.setHours(nowVN.getHours() + 1);
+            deliveryTime = getVNDateTime(nowVN);
+        } else if (pickupSchedule) {
+            const chosenPickupTime = document.querySelector(".pickup-choise-time")?.value.trim();
+            if (!chosenPickupTime) {
+                toast({ title: "Lỗi", message: "Vui lòng chọn giờ lấy hàng!", type: "error", duration: 3000 });
+                return;
+            }
+            const todayVN = getVNDateTime().slice(0, 10);
+            const selPu = new Date(`${todayVN} ${chosenPickupTime}`);
+            if (isNaN(selPu.getTime())) {
+                toast({ title: "Lỗi", message: "Giờ lấy hàng không hợp lệ!", type: "error", duration: 3000 });
+                return;
+            }
+            deliveryTime = getVNDateTime(selPu);
+        } else {
+            const nowVN = new Date(
+                new Date().toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' })
+            );
+            nowVN.setHours(nowVN.getHours() + 1);
+            deliveryTime = getVNDateTime(nowVN);
         }
-        hinhthucgiao = tudenlay.innerText;
     }
 
-    // Thoi gian nhan hang
-    if(giaongay.checked) {
-        thoigiangiao = "Giao ngay khi xong";
+    // Validate
+    if (!tenNguoiNhan || !sdtNhan || !diaChiNhan) {
+        toast({ title: "Chú ý", message: "Vui lòng nhập đầy đủ thông tin!", type: "warning", duration: 4000 });
+        return;
     }
 
-    if(giaovaogio.checked) {
-        thoigiangiao = document.querySelector(".choise-time").value;
+    // Lấy danh sách sản phẩm
+    let orderItems = [];
+    if (!product) {
+        try {
+            const res = await fetch(`/api/carts/${currentUser.cart_id}`);
+            if (!res.ok) throw new Error("Không thể lấy giỏ hàng");
+            const cart = await res.json();
+            orderItems = cart.items || [];
+        } catch {
+            toast({ title: "Lỗi", message: "Không thể tải giỏ hàng!", type: "error", duration: 3000 });
+            return;
+        }
+    } else {
+        orderItems = [product];
     }
 
-    let orderDetails = localStorage.getItem("orderDetails") ? JSON.parse(localStorage.getItem("orderDetails")) : [];
-    let order = localStorage.getItem("order") ? JSON.parse(localStorage.getItem("order")) : [];
-    let madon = createId(order);
-    let tongtien = 0;
-    if(product == undefined) {
-        currentUser.cart.forEach(item => {
-            item.madon = madon;
-            item.price = getpriceProduct(item.id);
-            tongtien += item.price * item.soluong;
-            orderDetails.push(item);
+    // Tính tổng
+    let tongTien = 0;
+    for (const item of orderItems) {
+        const qty = item.quantity || item.soluong || 0;
+        const price = item.product
+            ? parseFloat(item.product.price)
+            : parseFloat(await getpriceProduct(item.product_id));
+        tongTien += qty * price;
+    }
+    const total = tongTien + (isGiaoTanNoi ? PHIVANCHUYEN : 0);
+    document.getElementById("checkout-cart-total").innerText = vnd(tongTien);
+    priceFinal.innerText = vnd(total);
+
+    // Payload đặt hàng
+    const orderPayload = {
+        order_id: crypto.randomUUID(),
+        customer: tenNguoiNhan,
+        address: diaChiNhan,
+        phone: sdtNhan,
+        total_money: total,
+        payment_method: hinhThucGiao,
+        is_payment: false,
+        cart_id: currentUser.cart_id,
+        delivery_time: deliveryTime, // yyyy-mm-dd HH:mm:ss
+        note: note
+    };
+
+    try {
+        // Gửi đơn
+        const res = await fetch("/api/orders", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(orderPayload)
         });
-    } else {
-        product.madon = madon;
-        product.price = getpriceProduct(product.id);
-        tongtien += product.price * product.soluong;
-        orderDetails.push(product);
-    }   
-    
-    let tennguoinhan = document.querySelector("#tennguoinhan").value;
-    let sdtnhan = document.querySelector("#sdtnhan").value
+        const data = await res.json();
+        if (!res.ok) {
+            const msgs = data.errors
+                ? Object.values(data.errors).flat().join("<br>")
+                : data.message || "Không thể đặt hàng!";
+            throw new Error(msgs);
+        }
 
-    if(tennguoinhan == "" || sdtnhan == "" || diachinhan == "") {
-        toast({ title: 'Chú ý', message: 'Vui lòng nhập đầy đủ thông tin !', type: 'warning', duration: 4000 });
-    } else {
-        let donhang = {
-            id: madon,
-            khachhang: currentUser.phone,
-            hinhthucgiao: hinhthucgiao,
-            ngaygiaohang: document.querySelector(".pick-date.active").getAttribute("data-date"),
-            thoigiangiao: thoigiangiao,
-            ghichu: document.querySelector(".note-order").value,
-            tenguoinhan: tennguoinhan,
-            sdtnhan: sdtnhan,
-            diachinhan: diachinhan,
-            thoigiandat: new Date(),
-            tongtien:tongtien,
-            trangthai: 0
-        }
-    
-        order.unshift(donhang);
-        if(product == null) {
-            currentUser.cart.length = 0;
-        }
-    
-        localStorage.setItem("order",JSON.stringify(order));
-        localStorage.setItem("currentuser",JSON.stringify(currentUser));
-        localStorage.setItem("orderDetails",JSON.stringify(orderDetails));
-        toast({ title: 'Thành công', message: 'Đặt hàng thành công !', type: 'success', duration: 1000 });
-        setTimeout((e)=>{
-            window.location = "/";
-        },2000);  
+        // Tạo cart mới
+        const newCartRes = await fetch("/api/carts", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                cart_id: crypto.randomUUID(),
+                account_id: currentUser.account_id,
+                status: 1
+            })
+        });
+        if (!newCartRes.ok) throw new Error("Không thể tạo giỏ hàng mới");
+        const newCart = await newCartRes.json();
+
+        currentUser.cart_id = newCart.cart_id;
+        localStorage.setItem("currentuser", JSON.stringify(currentUser));
+
+        toast({ title: "Thành công", message: "Đặt hàng thành công!", type: "success", duration: 2000 });
+        setTimeout(() => window.location.href = "/", 2000);
+    } catch (err) {
+        toast({ title: "Lỗi", message: err.message, type: "error", duration: 5000 });
     }
 }
-
-function getpriceProduct(id) {
-    let products = JSON.parse(localStorage.getItem('products'));
-    let sp = products.find(item => {
-        return item.id == id;
-    })
-    return sp.price;
+async function getpriceProduct(id) {
+    const products = JSON.parse(localStorage.getItem("products")) || [];
+    const sp = products.find(item => item.id == id);
+    return sp ? sp.price : 0;
+}
+function getVNDateTime(date = new Date()) {
+    return date.toLocaleString('sv', {
+        timeZone: 'Asia/Ho_Chi_Minh',
+        hour12: false,
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
+    }).slice(0, 19);
 }

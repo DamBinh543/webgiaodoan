@@ -212,12 +212,7 @@
                                 <input class="form-control" type="text" name="infophone" id="infophone" disabled="true"
                                     placeholder="">
                             </div>
-                            <div class="form-group">
-                                <label for="infoemail" class="form-label">Email</label>
-                                <input class="form-control" type="email" name="infoemail" id="infoemail"
-                                    placeholder="Thêm địa chỉ email của bạn">
-                                <span class="inforemail-error form-message"></span>
-                            </div>
+        
                             <div class="form-group">
                                 <label for="infoaddress" class="form-label">Địa chỉ</label>
                                 <input class="form-control" type="text" name="infoaddress" id="infoaddress"
@@ -227,12 +222,6 @@
                     </div>
                     <div class="main-account-body-col">
                         <form action="" class="change-password">
-                            <div class="form-group">
-                                <label for="" class="form-label w60">Mật khẩu hiện tại</label>
-                                <input class="form-control" type="password" name="" id="password-cur-info"
-                                    placeholder="Nhập mật khẩu hiện tại">
-                                <span class="password-cur-info-error form-message"></span>
-                            </div>
                             <div class="form-group">
                                 <label for="" class="form-label w60">Mật khẩu mới </label>
                                 <input class="form-control" type="password" name="" id="password-after-info"
@@ -290,8 +279,8 @@
                         tôi </p>
                     <form action="" class="signup-form">
                         <div class="form-group">
-                            <label for="fullname" class="form-label">Tên người dùng </label>
-                            <input id="fullname" name="fullname" type="text" placeholder="Nhập họ và tên "
+                            <label for="username" class="form-label">Tên người dùng </label>
+                            <input id="username" name="username" type="text" placeholder="Nhập họ và tên "
                                 class="form-control">
                             <span class="form-message-name form-message"></span>
                         </div>
@@ -550,152 +539,197 @@
     </div>
     <div class="checkout-page">
         <div class="checkout-header">
-            <div class="checkout-return">
-                <button onclick="closecheckout()"><i class="fa-regular fa-chevron-left"></i></button>
-            </div>
-            <h2 class="checkout-title">Thanh toán</h2>
+          <div class="checkout-return">
+            <button onclick="closecheckout()">
+              <i class="fa-regular fa-chevron-left"></i>
+            </button>
+          </div>
+          <h2 class="checkout-title">Thanh toán</h2>
         </div>
         <main class="checkout-section container">
-            <div class="checkout-col-left">
-                <div class="checkout-row">
-                    <div class="checkout-col-title">
-                        Thông tin đơn hàng
-                    </div>
-                    <div class="checkout-col-content">
-                        <div class="content-group">
-                            <p class="checkout-content-label">Hình thức giao nhận</p>
-                            <div class="checkout-type-order">
-                                <button class="type-order-btn active" id="giaotannoi">
-                                    <i class="fa-duotone fa-moped"
-                                        style="--fa-secondary-opacity: 1.0; --fa-primary-color: dodgerblue; --fa-secondary-color: #ffb100;"></i>
-                                    Giao tận nơi
-                                </button>
-                                <button class="type-order-btn" id="tudenlay">
-                                    <i class="fa-duotone fa-box-heart"
-                                        style="--fa-secondary-opacity: 1.0; --fa-primary-color: pink; --fa-secondary-color: palevioletred;"></i>
-                                    Tự đến lấy
-                                </button>
-                            </div>
-                        </div>
-                        <div class="content-group">
-                            <p class="checkout-content-label">Ngày giao hàng</p>
-                            <div class="date-order">
-                            </div>
-                        </div>
-                        <div class="content-group chk-ship" id="giaotannoi-group">
-                            <p class="checkout-content-label">Thời gian giao hàng</p>
-                            <div class="delivery-time">
-                                <input type="radio" name="giaongay" id="giaongay" class="radio">
-                                <label for="giaongay">Giao ngay khi xong</label>
-                            </div>
-                            <div class="delivery-time">
-                                <input type="radio" name="giaongay" id="deliverytime" class="radio">
-                                <label for="deliverytime">Giao vào giờ</label>
-                                <select class="choise-time">
-                                    <option data-hours="08" value="08:00" selected="selected">08:00 - 09:00</option>
-
-                                    <option data-hours="09" value="09:00">09:00 - 10:00</option>
-
-                                    <option data-hours="10" value="10:00"> 10:00 - 11:00</option>
-
-                                    <option data-hours="11" value="11:00"> 11:00 - 12:00</option>
-
-                                    <option data-hours="12" value="12:00"> 12:00 - 13:00</option>
-
-                                    <option data-hours="13" value="13:00"> 13:00 - 14:00</option>
-
-                                    <option data-hours="14" value="14:00"> 14:00 - 15:00</option>
-
-                                    <option data-hours="15" value="15:00"> 15:00 - 16:00</option>
-
-                                    <option data-hours="16" value="16:00"> 16:00 - 17:00</option>
-
-                                    <option data-hours="17" value="17:00"> 17:00 - 18:00</option>
-
-                                    <option data-hours="18" value="18:00"> 18:00 - 19:00</option>
-
-                                    <option data-hours="19" value="19:00"> 19:00 - 20:00</option>
-
-                                    <option data-hours="20" value="20:00"> 20:00 - 21:00</option>
-
-                                    <option data-hours="21" value="21:00"> 21:00 - 22:00</option>
-
-                                </select>
-                            </div>
-                        </div>
-                        <div class="content-group" id="tudenlay-group">
-                            <p class="checkout-content-label">Lấy hàng tại chi nhánh</p>
-                            <div class="delivery-time">
-                                <input type="radio" name="chinhanh" id="chinhanh-1" class="radio">
-                                <label for="chinhanh-1">123 Nguyễn Trãi, Thanh Xuân, Hà Nội
-                                </label>
-                            </div>
-                            <div class="delivery-time">
-                                <input type="radio" name="chinhanh" id="chinhanh-2" class="radio">
-                                <label for="chinhanh-2">494 Giải Phóng, Hai Bà Trưng, Hà Nội</label>
-                            </div>
-                        </div>
-                        <div class="content-group">
-                            <p class="checkout-content-label">Ghi chú đơn hàng</p>
-                            <textarea type="text" class="note-order" placeholder="Nhập ghi chú"></textarea>
-                        </div>
-                    </div>
+          <div class="checkout-col-left">
+            <div class="checkout-row">
+              <div class="checkout-col-title">Thông tin đơn hàng</div>
+              <div class="checkout-col-content">
+                <div class="content-group">
+                  <p class="checkout-content-label">Hình thức giao nhận</p>
+                  <div class="checkout-type-order">
+                    <button class="type-order-btn active" id="giaotannoi">
+                      <i class="fa-duotone fa-moped"
+                         style="--fa-secondary-opacity:1.0; --fa-primary-color:dodgerblue; --fa-secondary-color:#ffb100;"></i>
+                      Giao tận nơi
+                    </button>
+                    <button class="type-order-btn" id="tudenlay">
+                      <i class="fa-duotone fa-box-heart"
+                         style="--fa-secondary-opacity:1.0; --fa-primary-color:pink; --fa-secondary-color:palevioletred;"></i>
+                      Tự đến lấy
+                    </button>
+                  </div>
                 </div>
-                <div class="checkout-row">
-                    <div class="checkout-col-title">
-                        Thông tin người nhận
-                    </div>
-                    <div class="checkout-col-content">
-                        <div class="content-group">
-                            <form action="" class="info-nhan-hang">
-                                <div class="form-group">
-                                    <input id="tennguoinhan" name="tennguoinhan" type="text"
-                                        placeholder="Tên người nhận" class="form-control">
-                                    <span class="form-message"></span>
-                                </div>
-                                <div class="form-group">
-                                    <input id="sdtnhan" name="sdtnhan" type="text" placeholder="Số điện thoại nhận hàng"
-                                        class="form-control">
-                                    <span class="form-message"></span>
-                                </div>
-                                <div class="form-group">
-                                    <input id="diachinhan" name="diachinhan" type="text" placeholder="Địa chỉ nhận hàng"
-                                        class="form-control chk-ship">
-                                    <span class="form-message"></span>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+      
+                <div class="content-group">
+                  <p class="checkout-content-label">Ngày giao hàng</p>
+                  <div class="date-order"></div>
                 </div>
+      
+                <div class="content-group chk-ship delivery-time-section">
+                  <p class="checkout-content-label">Thời gian giao hàng</p>
+                  <div class="delivery-time">
+                    <input type="radio" name="delivery" id="giaongay" class="radio">
+                    <label for="giaongay">Giao ngay khi xong</label>
+                  </div>
+                  <div class="delivery-time">
+                    <input type="radio" name="delivery" id="deliverytime" class="radio">
+                    <label for="deliverytime">Giao vào giờ</label>
+                    <select class="choise-time">
+                      <option value="08:00">08:00</option>
+                      <option value="08:30">08:30</option>
+                      <option value="09:00">09:00</option>
+                      <option value="09:30">09:30</option>
+                      <option value="10:00">10:00</option>
+                      <option value="10:30">10:30</option>
+                      <option value="11:00">11:00</option>
+                      <option value="11:30">11:30</option>
+                      <option value="12:00">12:00</option>
+                      <option value="12:30">12:30</option>
+                      <option value="13:00">13:00</option>
+                      <option value="13:30">13:30</option>
+                      <option value="14:00">14:00</option>
+                      <option value="14:30">14:30</option>
+                      <option value="15:00">15:00</option>
+                      <option value="15:30">15:30</option>
+                      <option value="16:00">16:00</option>
+                      <option value="16:30">16:30</option>
+                      <option value="17:00">17:00</option>
+                      <option value="17:30">17:30</option>
+                      <option value="18:00">18:00</option>
+                      <option value="18:30">18:30</option>
+                      <option value="19:00">19:00</option>
+                      <option value="19:30">19:30</option>
+                      <option value="20:00">20:00</option>
+                      <option value="20:30">20:30</option>
+                      <option value="21:00">21:00</option>
+                    </select>
+                  </div>
+                </div>
+      
+                
+                <div class="content-group" id="tudenlay-group" style="display: none;">
+                  <p class="checkout-content-label">Lấy hàng tại chi nhánh</p>
+                  <div class="delivery-time">
+                    <input type="radio" name="chinhanh" id="chinhanh-1" class="radio">
+                    <label for="chinhanh-1">123 Nguyễn Trãi, Thanh Xuân, Hà Nội</label>
+                  </div>
+                  <div class="delivery-time">
+                    <input type="radio" name="chinhanh" id="chinhanh-2" class="radio">
+                    <label for="chinhanh-2">494 Giải Phóng, Hai Bà Trưng, Hà Nội</label>
+                  </div>
+                </div>
+      
+                <div class="content-group pickup-time-section" style="display: none;">
+                  <p class="checkout-content-label">Thời gian lấy hàng</p>
+                  <div class="delivery-time">
+                    <input type="radio" name="pickuptime" id="pickuptime-now" class="radio">
+                    <label for="pickuptime-now">Lấy ngay khi xong</label>
+                  </div>
+                  <div class="delivery-time">
+                    <input type="radio" name="pickuptime" id="pickuptime-schedule" class="radio">
+                    <label for="pickuptime-schedule">Lấy vào giờ</label>
+                    <select class="pickup-choise-time">
+                      <option value="08:00">08:00</option>
+                      <option value="08:30">08:30</option>
+                      <option value="09:00">09:00</option>
+                      <option value="09:30">09:30</option>
+                      <option value="10:00">10:00</option>
+                      <option value="10:30">10:30</option>
+                      <option value="11:00">11:00</option>
+                      <option value="11:30">11:30</option>
+                      <option value="12:00">12:00</option>
+                      <option value="12:30">12:30</option>
+                      <option value="13:00">13:00</option>
+                      <option value="13:30">13:30</option>
+                      <option value="14:00">14:00</option>
+                      <option value="14:30">14:30</option>
+                      <option value="15:00">15:00</option>
+                      <option value="15:30">15:30</option>
+                      <option value="16:00">16:00</option>
+                      <option value="16:30">16:30</option>
+                      <option value="17:00">17:00</option>
+                      <option value="17:30">17:30</option>
+                      <option value="18:00">18:00</option>
+                      <option value="18:30">18:30</option>
+                      <option value="19:00">19:00</option>
+                      <option value="19:30">19:30</option>
+                      <option value="20:00">20:00</option>
+                      <option value="20:30">20:30</option>
+                      <option value="21:00">21:00</option>
+                    </select>
+                  </div>
+                </div>
+      
+                <div class="content-group">
+                  <p class="checkout-content-label">Ghi chú đơn hàng</p>
+                  <textarea class="note-order" placeholder="Nhập ghi chú"></textarea>
+                </div>
+              </div>
             </div>
-            <div class="checkout-col-right">
-                <p class="checkout-content-label">Đơn hàng</p>
-                <div class="bill-total" id="list-order-checkout">
-                </div>
-                <div class="bill-payment">
-                    <div class="total-bill-order">
+      
+            <div class="checkout-row">
+              <div class="checkout-col-title">Thông tin người nhận</div>
+              <div class="checkout-col-content">
+                <div class="content-group">
+                  <form class="info-nhan-hang">
+                    <div class="form-group">
+                      <input id="tennguoinhan" name="tennguoinhan" type="text"
+                             placeholder="Tên người nhận" class="form-control">
+                      <span class="form-message"></span>
                     </div>
-                    <div class="policy-note">
-                        Bằng việc bấm vào nút “Đặt hàng”, tôi đồng ý với
-                        <a href="#" target="_blank">chính sách hoạt động</a>
-                        của chúng tôi.
+                    <div class="form-group">
+                      <input id="sdtnhan" name="sdtnhan" type="text"
+                             placeholder="Số điện thoại nhận hàng" class="form-control">
+                      <span class="form-message"></span>
                     </div>
-                </div>
-                <div class="total-checkout">
-                    <div class="text">Tổng tiền</div>
-                    <div class="price-bill">
-                        <div class="price-final" id="checkout-cart-price-final">0</div>
+                    <div class="form-group">
+                      <input id="diachinhan" name="diachinhan" type="text"
+                             placeholder="Địa chỉ nhận hàng" class="form-control chk-ship">
+                      <span class="form-message"></span>
                     </div>
+                  </form>
                 </div>
-                <button class="complete-checkout-btn">Đặt hàng</button>
+              </div>
             </div>
+          </div>
+      
+          <div class="checkout-col-right">
+            <p class="checkout-content-label">Đơn hàng</p>
+            <div class="bill-total" id="list-order-checkout"></div>
+      
+            <div class="bill-payment">
+              <div class="total-bill-order"></div>
+              <div class="policy-note">
+                Bằng việc bấm vào nút “Đặt hàng”, tôi đồng ý với
+                <a href="#" target="_blank">chính sách hoạt động</a> của chúng tôi.
+              </div>
+            </div>
+      
+            <div class="total-checkout">
+              <div class="text">Tổng tiền</div>
+              <div class="price-bill">
+                <div class="price-final" id="checkout-cart-price-final">0</div>
+              </div>
+            </div>
+      
+            <button class="complete-checkout-btn">Đặt hàng</button>
+          </div>
         </main>
-    </div>
+      </div>
     <div id="toast"></div>
-    <script src="./js/initialization.js"></script>
+    <script src="./js/login.js"></script>
     <script src="./js/main.js"></script>
     <script src="./js/checkout.js"></script>
     <script src="./js/toast-message.js"></script>
+    <script src="./js/product.js"></script>
+    
 </body>
 
 </html>

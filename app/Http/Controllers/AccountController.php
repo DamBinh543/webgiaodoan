@@ -63,11 +63,25 @@ class AccountController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $account = Account::findOrFail($id);
-        $account->update($request->all());
-        return $account;
+{
+    $account = Account::findOrFail($id);
+    $validated = $request->validate([
+        'username' => 'nullable|string',
+        'address' => 'nullable|string',
+        'password' => 'sometimes|string|confirmed|min:6',
+    ]);
+
+    if (isset($validated['password'])) {
+        $validated['password'] = bcrypt($validated['password']);
     }
+
+    $account->update($validated);
+
+    return response()->json([
+        'message' => 'Cập nhật thành công',
+        'data' => $account
+    ]);
+}
 
     public function destroy($id)
     {

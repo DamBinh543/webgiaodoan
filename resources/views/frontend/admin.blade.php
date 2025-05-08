@@ -434,8 +434,8 @@
             <div class="form-content sign-up">
                 <form action="" class="signup-form">
                     <div class="form-group">
-                        <label for="fullname" class="form-label">Tên đầy đủ</label>
-                        <input id="fullname" name="fullname" type="text" placeholder="VD: Nhật Sinh" class="form-control">
+                        <label for="username" class="form-label">Tên đầy đủ</label>
+                        <input id="username" name="username" type="text" placeholder="VD: Nhật Sinh" class="form-control">
                         <span class="form-message-name form-message"></span>
                     </div>
                     <div class="form-group">

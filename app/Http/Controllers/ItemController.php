@@ -20,22 +20,29 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'item_id' => 'required|string|unique:items,item_id',
-            'cart_id' => 'required|string',
-            'product_id' => 'required|string',
-            'quantity' => 'required|integer',
-            'note' => 'nullable|string',
+            'item_id'    => 'required|string|unique:items,item_id',
+            'cart_id'    => 'required|string',
+            'product_id' => 'required|integer',
+            'quantity'   => 'required|integer',
+            'note'       => 'nullable|string',
         ]);
-
-        return Item::create($data);
+    
+        $data['note'] = $data['note'] ?? '';
+        $item = Item::create($data);
+    
+        return response()->json($item, 201);
     }
+    
 
     public function update(Request $request, $id)
     {
         $item = Item::findOrFail($id);
-        $item->update($request->all());
-
-        return $item;
+        $data = $request->validate([
+            'quantity' => 'sometimes|integer|min:1',
+            'note' => 'nullable|string'
+        ]);
+        $item->update($data);
+        return response()->json(['message' => 'Cập nhật thành công', 'item' => $item]);
     }
 
     public function destroy($id)
