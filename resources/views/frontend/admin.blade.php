@@ -95,9 +95,7 @@
                             <div class="on-box">
                                 <img src="assets/img/admin/s1.png" alt="" style=" width: 200px;">
                                 <h3>Khách hàng</h3>
-                                <p>Sản phẩm là bất cứ cái gì có thể đưa vào thị trường để tạo sự chú ý, mua sắm, sử dụng
-                                    hay tiêu dùng nhằm thỏa mãn một nhu cầu hay ước muốn. Nó có thể là những vật thể,
-                                    dịch vụ, con người, địa điểm, tổ chức hoặc một ý tưởng.</p>
+                                <p>Ở đây bao gồm số lượng những khách hàng đã lập tài khoản online trên trang web của nhà hàng Binhfood.</p>
                             </div>
 
                         </div>
@@ -108,8 +106,7 @@
                                 <img src="assets/img/admin/s2.png" alt="" style=" width: 200px;">
                                 <h2 id="amount-product">0</h2>
                                 <h3>Sản phẩm</h3>
-                                <p>Khách hàng mục tiêu là một nhóm đối tượng khách hàng trong phân khúc thị trường mục
-                                    tiêu mà doanh nghiệp bạn đang hướng tới. </p>
+                                <p> Bao gồm các món ăn mà nhà hàng Binhfood nhận giao online đến tận nơi cho khách hàng hoặc nhận làm trước để khách tự đến lấy </p>
                             </div>
                         </div>
                     </div>
@@ -118,9 +115,8 @@
                             <h2 id="doanh-thu">$5020</h2>
                             <div class="on-box">
                                 <img src="assets/img/admin/s3.png" alt="" style=" width: 200px;">
-                                <h3>Doanh thu</h3>
-                                <p>Doanh thu của doanh nghiệp là toàn bộ số tiền sẽ thu được do tiêu thụ sản phẩm, cung
-                                    cấp dịch vụ với sản lượng.</p>
+                                <h3>Tiền thu về </h3>
+                                <p>Là tổng số tiền mà nhà hàng Binhfood thu được thông qua trang web giao hàng này, không tính những đơn chưa xử lý.</p>
                             </div>
                         </div>
                     </div>
@@ -435,7 +431,7 @@
                 <form action="" class="signup-form">
                     <div class="form-group">
                         <label for="username" class="form-label">Tên đầy đủ</label>
-                        <input id="username" name="username" type="text" placeholder="VD: Nhật Sinh" class="form-control">
+                        <input id="username" name="username" type="text" placeholder="Nhập họ tên" class="form-control">
                         <span class="form-message-name form-message"></span>
                     </div>
                     <div class="form-group">

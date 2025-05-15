@@ -413,7 +413,7 @@ function getProductInfo(id) {
     return products.find(item => item.id == id);
 }
 
-//quan ly don hang
+// quản lý đơn hàng
 async function renderOrderProduct() {
     const currentUser = JSON.parse(localStorage.getItem("currentuser"));
     if (!currentUser) return;
@@ -452,8 +452,9 @@ async function renderOrderProduct() {
                     </div>`;
                 });
 
-                const textCompl = order.status == 1 ? "Đã xử lý" : "Đang xử lý";
-                const classCompl = order.status == 1 ? "complete" : "no-complete";
+                // Sử dụng is_payment để xác định trạng thái xử lý
+                const textCompl = order.is_payment == 1 ? "Đã xử lý" : "Chưa xử lý";
+                const classCompl = order.is_payment == 1 ? "complete" : "no-complete";
 
                 productHtml += `<div class="order-history-control">
                     <div class="order-history-status">

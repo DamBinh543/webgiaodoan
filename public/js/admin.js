@@ -8,7 +8,7 @@ function checkLogin() {
         document.getElementById("name-acc").innerHTML = currentUser.username;
     }
 }
-window.onload = checkLogin();
+document.addEventListener('DOMContentLoaded', checkLogin);
 
 //do sidebar open and close
 const menuIconButton = document.querySelector(".menu-icon-btn");
@@ -39,36 +39,52 @@ for(let i=0;i<closeBtn.length;i++){
     })
 }
 
-// Get amount product
-function getAmoumtProduct() {
-    let products = localStorage.getItem("products") ? JSON.parse(localStorage.getItem("products")) : [];
-    return products.length;
-}
-
-// Get amount user
-function getAmoumtUser() {
-    let accounts = localStorage.getItem("accounts") ? JSON.parse(localStorage.getItem("accounts")) : [];
-    return accounts.filter(item => item.userType == 0).length;
-}
-
-// Get amount user
-function getMoney() {
-    let tongtien = 0;
-    let orders = localStorage.getItem("order") ? JSON.parse(localStorage.getItem("order")) : [];
-    orders.forEach(item => {
-        tongtien += item.tongtien
-    });
-    return tongtien;
-}
-
-document.getElementById("amount-user").innerHTML = getAmoumtUser();
-document.getElementById("amount-product").innerHTML = getAmoumtProduct();
-document.getElementById("doanh-thu").innerHTML = vnd(getMoney());
-
-// Doi sang dinh dang tien VND
 function vnd(price) {
-    return price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+  return Number(price).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
 }
+// Hàm load thống kê dashboard
+async function loadDashboardStats() {
+  try {
+    const [accRes, prodRes, orderRes] = await Promise.all([
+      fetch('/api/accounts'),
+      fetch('/api/products'),
+      fetch('/api/orders')
+    ]);
+
+    if (!accRes.ok || !prodRes.ok || !orderRes.ok) {
+      throw new Error('Lỗi khi fetch dữ liệu thống kê');
+    }
+    
+    const [accounts, products, orders] = await Promise.all([
+      accRes.json(),
+      prodRes.json(),
+      orderRes.json()
+    ]);
+
+    // Lọc tài khoản có userType là "user"
+    const numUsers = accounts.filter(u => u.userType === "user").length;
+    const numProducts = products.length;
+    
+    // Tính tổng doanh thu từ các đơn hàng đã thanh toán (is_payment = 1)
+    const revenue = orders
+      .filter(o => o.is_payment == 1)
+      .reduce((sum, o) => sum + Number(o.total_money), 0);
+
+    document.getElementById("amount-user").textContent    = numUsers;
+    document.getElementById("amount-product").textContent = numProducts;
+    document.getElementById("doanh-thu").textContent      = vnd(revenue);
+
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  checkLogin();          
+  loadDashboardStats();  
+});
+
+
 // Phân trang 
 // ====== CẤU HÌNH PHÂN TRANG ======
 let perPage = 12;
@@ -394,9 +410,7 @@ let priceFinal = document.getElementById("checkout-cart-price-final");
 let orders = [];
 
 // On load, fetch orders
-window.addEventListener('load', () => {
-  fetchOrders();
-});
+document.addEventListener('DOMContentLoaded', fetchOrders);
 
 /** Fetch all orders and normalize fields */
 async function fetchOrders() {
@@ -639,3 +653,417 @@ function cancelSearchOrder() {
   document.getElementById("time-end").value = "";
   showOrder(orders);
 }
+
+
+
+
+// DOM selectors
+const addAccountBtn = document.getElementById('signup-button');
+const updateAccountBtn = document.getElementById('btn-update-account');
+const closeModalBtn = document.querySelector('.modal.signup .modal-close');
+const modalSignup = document.querySelector('.signup');
+const usernameInput = document.getElementById('username');
+const phoneInput = document.getElementById('phone');
+const passwordInput = document.getElementById('password');
+const showUserTable = document.getElementById('show-user');
+const searchStatus = document.getElementById('tinh-trang-user');
+const searchText = document.getElementById('form-search-user');
+const searchStart = document.getElementById('time-start-user');
+const searchEnd = document.getElementById('time-end-user');
+const searchBtn = document.getElementById('search-user-btn');
+const resetBtn = document.getElementById('cancel-search-btn');
+const logoutBtn = document.getElementById("logout-acc");
+
+const formMessageName = document.querySelector('.form-message-name');
+const formMessagePhone = document.querySelector('.form-message-phone');
+const formMessagePassword = document.querySelector('.form-message-password');
+
+let allAccounts = [];
+let currentEditId = null;
+
+// Reset lại form nhập liệu và thông báo lỗi (nếu có)
+function signUpFormReset() {
+  usernameInput.value = "";
+  phoneInput.value = "";
+  passwordInput.value = "";
+  formMessageName.textContent = "";
+  formMessagePhone.textContent = "";
+  formMessagePassword.textContent = "";
+}
+
+// Đóng modal => reset form
+closeModalBtn.addEventListener("click", () => {
+  signUpFormReset();
+  modalSignup.classList.remove("open");
+});
+
+// Mở modal thêm tài khoản mới
+function openCreateAccount() {
+  modalSignup.classList.add("open");
+  // Ẩn các phần tử dành riêng cho chỉnh sửa, hiện phần thêm mới
+  document.querySelectorAll(".edit-account-e").forEach(el => el.style.display = "none");
+  document.querySelectorAll(".add-account-e").forEach(el => el.style.display = "block");
+  signUpFormReset();
+}
+
+// Hiển thị danh sách người dùng vào bảng
+function showUserArr(arr) {
+  let html = "";
+  if (!arr.length) {
+    html = `<tr><td colspan="6">Không có dữ liệu</td></tr>`;
+  } else {
+    arr.forEach((acc, idx) => {
+      let statusLabel = acc.status == 0 
+        ? '<span class="status-no-complete">Bị khóa</span>'
+        : '<span class="status-complete">Hoạt động</span>';
+      html += `
+        <tr>
+          <td>${idx + 1}</td>
+          <td>${acc.username}</td>
+          <td>${acc.phone}</td>
+          <td>${formatDate(acc.join)}</td>
+          <td>${statusLabel}</td>
+          <td class="control control-table">
+            <button class="btn-delete" data-id="${acc.id}"><i class="fa-regular fa-trash"></i></button>
+          </td>
+        </tr>
+      `;
+    });
+  }
+  showUserTable.innerHTML = html;
+
+  // Gắn sự kiện cho nút sửa và xóa sau khi đã được render
+  document.querySelectorAll('.btn-edit').forEach(btn =>
+    btn.addEventListener('click', () => editAccount(btn.dataset.id))
+  );
+  document.querySelectorAll('.btn-delete').forEach(btn =>
+    btn.addEventListener('click', () => deleteAccount(btn.dataset.id))
+  );
+}
+
+// Lấy dữ liệu tài khoản từ API và hiển thị ra bảng
+async function loadAccounts() {
+  try {
+    const res = await fetch('/api/accounts');
+    const data = await res.json();
+    allAccounts = data;
+    showUserArr(allAccounts);
+  } catch (err) {
+    console.error("Lỗi khi tải dữ liệu tài khoản:", err);
+  }
+}
+
+// Lọc dữ liệu theo trạng thái, tên/SDT, và khoảng thời gian bắt đầu/tháng kết thúc
+function filterAccounts() {
+  const statusVal = parseInt(searchStatus.value);
+  const text = searchText.value.trim().toLowerCase();
+  const startDate = searchStart.value;
+  const endDate = searchEnd.value;
+
+  let filteredAccounts = allAccounts.filter(account => {
+    let matchStatus = (statusVal === 2) || (account.status === statusVal);
+    let matchText = (!text) || (account.username.toLowerCase().includes(text)) || (account.phone.includes(text));
+    let matchStart = (!startDate) || (new Date(account.join) >= new Date(startDate));
+    let matchEnd = (!endDate) || (new Date(account.join) <= new Date(endDate));
+
+    return matchStatus && matchText && matchStart && matchEnd;
+  });
+
+  showUserArr(filteredAccounts);
+}
+
+// Reset ô tìm kiếm và hiển thị lại toàn bộ danh sách
+function resetSearch() {
+  searchStatus.value = 2;
+  searchText.value = "";
+  searchStart.value = "";
+  searchEnd.value = "";
+  showUserArr(allAccounts);
+}
+
+// Thêm mới tài khoản
+async function addAccount(e) {
+  e.preventDefault(); 
+  formMessageName.textContent = "";
+  formMessagePhone.textContent = "";
+  formMessagePassword.textContent = "";
+  
+  const username = usernameInput.value.trim();
+  const phone = phoneInput.value.trim();
+  const password = passwordInput.value.trim();
+
+  // Kiểm tra đầu vào
+  if (username.length < 3) {
+    formMessageName.textContent = 'Họ tên phải có ít nhất 3 ký tự';
+    return;
+  }
+  if (!/^\d{10}$/.test(phone)) {
+    formMessagePhone.textContent = 'Số điện thoại phải có 10 số';
+    return;
+  }
+  if (password.length < 6) {
+    formMessagePassword.textContent = 'Mật khẩu phải có ít nhất 6 ký tự';
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/accounts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: username,
+        phone: phone,
+        password: password,
+        password_confirmation: password,
+        status: 1,
+        userType: 'user',
+        join: new Date().toISOString().split('T')[0]
+      })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      alert("Tạo tài khoản thành công!");
+      modalSignup.classList.remove('open');
+      loadAccounts();
+    } else {
+      alert(data.message ? data.message : "Có lỗi khi tạo tài khoản!");
+    }
+  } catch (err) {
+    console.error("Lỗi khi thêm tài khoản:", err);
+  }
+}
+addAccountBtn.addEventListener('click', addAccount);
+
+// Xóa tài khoản
+async function deleteAccount(id) {
+  if (!confirm('Xác nhận xóa tài khoản?')) return;
+  try {
+    const res = await fetch(`/api/accounts/${id}`, { method: 'DELETE' });
+    if (res.ok) {
+      alert("Xóa tài khoản thành công!");
+      loadAccounts();
+    } else {
+      alert("Có lỗi xảy ra khi xóa tài khoản!");
+    }
+  } catch (err) {
+    console.error("Lỗi khi xóa tài khoản:", err);
+  }
+}
+
+
+
+
+// Khởi tạo các sự kiện sau khi DOM được tải hoàn chỉnh
+document.addEventListener('DOMContentLoaded', () => {
+  loadAccounts();
+  searchBtn.addEventListener('click', filterAccounts);
+  resetBtn.addEventListener('click', resetSearch);
+});
+document.addEventListener("DOMContentLoaded", () => {
+  // Hàm chuyển đổi dữ liệu API từ các endpoint thực có: /api/orders, /api/products và /api/items
+  async function createObj() {
+    try {
+      const ordersResponse = await fetch('/api/orders');
+      const orders = await ordersResponse.json();
+
+      const productsResponse = await fetch('/api/products');
+      const products = await productsResponse.json();
+
+      // Thay vì api/order-details, sử dụng api/items vì endpoint này có tồn tại
+      const itemsResponse = await fetch('/api/items');
+      const orderDetails = await itemsResponse.json();
+
+      let result = [];
+      orderDetails.forEach(item => {
+        // Giả sử item.product_id & item.cart_id được định nghĩa theo model của bạn
+        let prod = products.find(product => product.product_id == item.product_id);
+        if (!prod) return;
+        let order = orders.find(orderObj => orderObj.cart_id == item.cart_id);
+        if (!order) return;
+        let obj = {
+          id: item.product_id,            // Sử dụng product_id để xác định sản phẩm
+          madon: item.item_id,            // Sử dụng item_id từ API items làm mã đơn (bạn có thể thay đổi nếu cần)
+          price: prod.price,
+          quantity: item.quantity,
+          category: prod.category,
+          title: prod.title,
+          img: prod.img,
+          time: order.thoigiandat        // Giả sử đơn hàng có thuộc tính thoigiandat
+        };
+        result.push(obj);
+      });
+      return result;
+    } catch (error) {
+      console.error("Lỗi khi lấy dữ liệu từ API:", error);
+      return [];
+    }
+  }
+
+  // Hàm lọc dữ liệu theo danh mục, tiêu đề và khoảng thời gian
+  async function thongKe(mode) {
+    const categoryTkEl = document.getElementById("the-loai-tk");
+    const ctEl = document.getElementById("form-search-tk");
+    const timeStartEl = document.getElementById("time-start-tk");
+    const timeEndEl = document.getElementById("time-end-tk");
+
+    // Kiểm tra tồn tại của các phần tử DOM trước khi truy cập
+    if (!categoryTkEl || !ctEl || !timeStartEl || !timeEndEl) {
+      console.error("Một hoặc nhiều phần tử DOM không tồn tại");
+      return;
+    }
+
+    let categoryTk = categoryTkEl.value;
+    let ct = ctEl.value;
+    let timeStart = timeStartEl.value;
+    let timeEnd = timeEndEl.value;
+
+    if (timeEnd < timeStart && timeEnd !== "" && timeStart !== "") {
+      alert("Lựa chọn thời gian sai !");
+      return;
+    }
+
+    let arrDetail = await createObj();
+
+    let result = categoryTk === "Tất cả" ? arrDetail : arrDetail.filter(item => item.category === categoryTk);
+
+    result = ct === "" ? result : result.filter(item => item.title.toLowerCase().includes(ct.toLowerCase()));
+
+    if (timeStart !== "" && timeEnd === "") {
+      result = result.filter(item => new Date(item.time) > new Date(timeStart).setHours(0, 0, 0));
+    } else if (timeStart === "" && timeEnd !== "") {
+      result = result.filter(item => new Date(item.time) < new Date(timeEnd).setHours(23, 59, 59));
+    } else if (timeStart !== "" && timeEnd !== "") {
+      result = result.filter(item =>
+        new Date(item.time) > new Date(timeStart).setHours(0, 0, 0) &&
+        new Date(item.time) < new Date(timeEnd).setHours(23, 59, 59)
+      );
+    }
+    showThongKe(result, mode);
+  }
+
+  // Hàm hiển thị tổng quan
+  function showOverview(arr) {
+    const quantityProductEl = document.getElementById("quantity-product");
+    const quantityOrderEl = document.getElementById("quantity-order");
+    const quantitySaleEl = document.getElementById("quantity-sale");
+
+    if (!quantityProductEl || !quantityOrderEl || !quantitySaleEl) {
+      console.error("Không tìm thấy phần tử hiển thị tổng quan");
+      return;
+    }
+
+    quantityProductEl.innerText = arr.length;
+    quantityOrderEl.innerText = arr.reduce((sum, cur) => sum + parseInt(cur.quantity), 0);
+    quantitySaleEl.innerText = vnd(arr.reduce((sum, cur) => sum + parseInt(cur.doanhthu), 0));
+  }
+
+  // Hàm hiển thị bảng thống kê
+  async function showThongKe(arr, mode) {
+    let orderHtml = "";
+    let mergeObj = mergeObjThongKe(arr);
+
+    // Hiển thị tổng quan
+    showOverview(mergeObj);
+
+    switch (mode) {
+      case 0:
+        mergeObj = mergeObjThongKe(await createObj());
+        showOverview(mergeObj);
+        document.getElementById("the-loai-tk").value = "Tất cả";
+        document.getElementById("form-search-tk").value = "";
+        document.getElementById("time-start-tk").value = "";
+        document.getElementById("time-end-tk").value = "";
+        break;
+      case 1:
+        mergeObj.sort((a, b) => parseInt(a.quantity) - parseInt(b.quantity));
+        break;
+      case 2:
+        mergeObj.sort((a, b) => parseInt(b.quantity) - parseInt(a.quantity));
+        break;
+    }
+
+    mergeObj.forEach((item, index) => {
+      orderHtml += `
+        <tr>
+          <td>${index + 1}</td>
+          <td>
+            <div class="prod-img-title">
+              <img class="prd-img-tbl" src="${item.img}" alt="">
+              <p>${item.title}</p>
+            </div>
+          </td>
+          <td>${item.quantity}</td>
+          <td>${vnd(item.doanhthu)}</td>
+          <td>
+            <button class="btn-detail product-order-detail" data-id="${item.id}">
+              <i class="fa-regular fa-eye"></i> Chi tiết
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+    const showTkEl = document.getElementById("showTk");
+    if (showTkEl) {
+      showTkEl.innerHTML = orderHtml;
+    } else {
+      console.error("Không tìm thấy phần tử để hiển thị thống kê");
+    }
+
+    // Gắn sự kiện cho các nút "Chi tiết"
+    document.querySelectorAll(".product-order-detail").forEach(button => {
+      let idProduct = button.getAttribute("data-id");
+      button.addEventListener("click", () => {
+        detailOrderProduct(arr, idProduct);
+      });
+    });
+  }
+
+  // Hàm gộp các đối tượng có cùng sản phẩm lại với nhau
+  function mergeObjThongKe(arr) {
+    let result = [];
+    arr.forEach(item => {
+      let existing = result.find(i => i.id == item.id);
+      if (existing) {
+        existing.quantity = parseInt(existing.quantity) + parseInt(item.quantity);
+        existing.doanhthu += parseInt(item.price) * parseInt(item.quantity);
+      } else {
+        const newItem = { ...item };
+        newItem.doanhthu = newItem.price * newItem.quantity;
+        result.push(newItem);
+      }
+    });
+    return result;
+  }
+
+  // Hàm hiển thị chi tiết đơn hàng của sản phẩm được chọn
+  function detailOrderProduct(arr, id) {
+    let orderHtml = "";
+    arr.forEach(item => {
+      if (item.id == id) {
+        orderHtml += `
+          <tr>
+            <td>${item.madon}</td>
+            <td>${item.quantity}</td>
+            <td>${vnd(item.price)}</td>
+            <td>${formatDate(item.time)}</td>
+          </tr>
+        `;
+      }
+    });
+    const detailEl = document.getElementById("show-product-order-detail");
+    if (detailEl) {
+      detailEl.innerHTML = orderHtml;
+    }
+    const modalEl = document.querySelector(".modal.detail-order-product");
+    if (modalEl) {
+      modalEl.classList.add("open");
+    }
+  }
+
+  // Khởi chạy ban đầu khi trang load
+  (async function () {
+    const data = await createObj();
+    await showThongKe(data);
+  })();
+
+});

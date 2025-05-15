@@ -16,6 +16,7 @@ class Comment extends Model
         'account_id',
         'product_id',
         'content',
+        'rate'
     ];
 
     use HasFactory;

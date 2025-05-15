@@ -1737,6 +1737,7 @@ input[type=number] {
     font-weight: 500;
     margin-bottom: 0;
     margin-top: 10px;
+    text-align: center;
 }
 
 .form-ground {

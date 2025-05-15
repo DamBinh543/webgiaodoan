@@ -381,16 +381,9 @@
                     </div>
                     <div class="footer-top-subbox">
                         <div class="footer-top-subs">
-                            <h2 class="footer-top-subs-title">Đăng ký nhận tin</h2>
-                            <p class="footer-top-subs-text">Nhận thông tin mới nhất từ chúng tôi</p>
+                            <h2 class="footer-top-subs-title">Luôn bên cạnh bạn những lúc bạn cần</h2>
+                            <p class="footer-top-subs-text">An toàn - Uy tín - Chất lượng</p>
                         </div>
-                        <form class="form-ground">
-                            <input type="email" class="form-ground-input" placeholder="Nhập email của bạn">
-                            <button class="form-ground-btn">
-                                <span>ĐĂNG KÝ</span>
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </button>
-                        </form>
                     </div>
                 </div>
             </div>

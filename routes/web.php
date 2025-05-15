@@ -19,4 +19,6 @@ Route::get('/', function () {
 Route::get('/admin', function () {
     return view('frontend.admin');
 });
-
+Route::get('/product/{id}', function ($id) {
+    return view('frontend.detailPage', ['productId' => $id]);
+});

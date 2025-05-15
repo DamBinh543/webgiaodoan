@@ -23,7 +23,8 @@ class CommentController extends Controller
             'comment_id' => 'required|string|unique:comments,comment_id',
             'account_id' => 'required|string',
             'product_id' => 'required|string',
-            'content' => 'required|string',
+            'content' => 'nullable|string',
+            'rate'=> 'nullable|integer'
         ]);
 
         return Comment::create($data);

@@ -23,9 +23,9 @@ class AccountController extends Controller
         // Validate request data
         $data = $request->validate([
             'username' => 'required|string|unique:accounts,username',
-            'password' => 'required|string|min:6|confirmed', // Xác nhận mật khẩu
+            'password' => 'required|string|min:6|confirmed',
             'phone' => 'required|string|size:10|unique:accounts,phone',
-            'address' => 'nullable|string', // Nếu address không bắt buộc
+            'address' => 'nullable|string', 
             'userType' => 'required|string|in:admin,user',
             'join' => 'nullable|date',
         ]);

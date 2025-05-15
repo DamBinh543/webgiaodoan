@@ -27,7 +27,7 @@ function renderProducts(showProduct) {
             productHtml += `<div class="col-product">
                 <article class="card-product">
                     <div class="card-header">
-                        <a href="#" class="card-image-link" onclick="detailProduct('${product.product_id}')">
+                        <a href="#" class="card-image-link" onclick="detailPage('${product.product_id}')">
                             <img class="card-image" src="${product.img}" alt="${product.title}">
                         </a>
                     </div>
@@ -199,7 +199,6 @@ async function detailProduct(productId) {
                     <span class="price">${vnd(infoProduct.price)}</span>
                 </div>
                 <div class="modal-footer-control">
-                    <button class="button-dathangngay" data-product="${infoProduct.product_id}">Đặt hàng ngay</button>
                     <button class="button-dat" id="add-cart"><i class="fa-light fa-basket-shopping"></i></button>
                 </div>
             </div>
@@ -247,9 +246,6 @@ async function detailProduct(productId) {
             }
         });
 
-        // Gọi hàm xử lý "Đặt hàng ngay"
-        dathangngay();
-
     } catch (error) {
         console.error("Lỗi khi lấy chi tiết sản phẩm:", error);
         toast({
@@ -259,4 +255,7 @@ async function detailProduct(productId) {
             duration: 3000
         });
     }
+}
+function detailPage(productId) {
+    window.location.href = `/product/${productId}`;
 }
