@@ -27,7 +27,7 @@ function renderProducts(showProduct) {
             productHtml += `<div class="col-product">
                 <article class="card-product">
                     <div class="card-header">
-                        <a href="#" class="card-image-link" onclick="detailPage('${product.product_id}')">
+                        <a href="#" class="card-image-link" onclick="detailProduct('${product.product_id}')">
                             <img class="card-image" src="${product.img}" alt="${product.title}">
                         </a>
                     </div>
@@ -170,7 +170,6 @@ async function detailProduct(productId) {
         const response = await fetch(`http://localhost:8000/api/products/${productId}`);
         const infoProduct = await response.json();
 
-        // Tạo giao diện chi tiết sản phẩm
         const modalHtml = `
             <div class="modal-header">
                 <img class="product-image" src="${infoProduct.img}" alt="">

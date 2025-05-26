@@ -51,10 +51,7 @@ class OrderController extends Controller
 
     public function getByAccount($account_id)
     {
-        // Lấy tất cả cart_id từ carts theo account_id
         $cartIds = Cart::where('account_id', $account_id)->pluck('cart_id');
-    
-        // Lấy tất cả đơn hàng có cart_id nằm trong danh sách trên và lấy thông tin sản phẩm liên quan
         $orders = Order::with(['cart.items.product'])
                         ->whereIn('cart_id', $cartIds)
                         ->get();

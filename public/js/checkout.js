@@ -359,7 +359,7 @@ async function xulyDathang(product) {
         payment_method: hinhThucGiao,
         is_payment: false,
         cart_id: currentUser.cart_id,
-        delivery_time: deliveryTime, // yyyy-mm-dd HH:mm:ss
+        delivery_time: deliveryTime, 
         note: note
     };
 

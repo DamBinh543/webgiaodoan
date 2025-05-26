@@ -181,8 +181,7 @@
                                 <input type="date" class="form-control-date" id="time-end-user" onchange="showUser()">
                             </div>
                         </form>      
-                        <button class="btn-reset-order" onclick="cancelSearchUser()"><i class="fa-light fa-arrow-rotate-right"></i></button>     
-                        <button id="btn-add-user" class="btn-control-large" onclick="openCreateAccount()"><i class="fa-light fa-plus"></i> <span>Thêm khách hàng</span></button>          
+                        <button class="btn-reset-order" onclick="cancelSearchUser()"><i class="fa-light fa-arrow-rotate-right"></i></button>              
                     </div>
                 </div>
                 <div class="table">

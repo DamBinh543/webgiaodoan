@@ -196,9 +196,7 @@ async function showCart() {
                 <div class="cart-item-control">
                     <button class="cart-item-delete" onclick="deleteCartItem('${item.item_id}', this)">Xóa</button>
                     <div class="buttons_added">
-                        <input class="minus is-form" type="button" value="-" onclick="decreasingNumber(this)">
                         <input class="input-qty" max="100" min="1" type="number" value="${item.quantity}" onchange="updateItemQuantity(this)">
-                        <input class="plus is-form" type="button" value="+" onclick="increasingNumber(this)">
                     </div>
                 </div>
             </li>`;
@@ -222,7 +220,6 @@ async function showCart() {
     document.querySelector('.them-mon').onclick = closeCart;
     document.querySelector('.cart-container').onclick = e => e.stopPropagation();
 }
-
 
 async function deleteCartItem(itemId, el) {
     try {
@@ -460,6 +457,7 @@ async function renderOrderProduct() {
                     <div class="order-history-status">
                         <span class="order-history-status-sp ${classCompl}">${textCompl}</span>
                         <button id="order-history-detail" onclick="detailOrder('${order.order_id}')"><i class="fa-regular fa-eye"></i> Xem chi tiết</button>
+                        ${order.is_payment == 0 ? `<button class="delete-order-btn" onclick="deleteOrder('${order.order_id}')"><i class="fa-regular fa-trash-can"></i> Xóa</button>` : ""}
                     </div>
                     <div class="order-history-total">
                         <span class="order-history-total-desc">Tổng tiền: </span>
@@ -476,7 +474,20 @@ async function renderOrderProduct() {
         console.error("Lỗi khi tải đơn hàng:", error);
     }
 }
+async function deleteOrder(orderId) {
+    try {
+        const res = await fetch(`/api/orders/${orderId}`, {
+            method: "DELETE",
+        });
 
+        if (!res.ok) throw new Error("Lỗi khi xóa đơn hàng");
+
+        toast({ title: 'Thành công', message: 'Đã xóa đơn hàng', type: 'success' });
+        renderOrderProduct(); 
+    } catch (error) {
+        console.error("Lỗi khi xóa đơn hàng:", error);
+    }
+}
 
 // Format Date
 function formatDate(date) {

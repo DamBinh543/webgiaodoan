@@ -2312,3 +2312,15 @@ input[type=number] {
     display: none;
 }
 
+.delete-order-btn {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 10px; /* Làm tròn góc */
+}
+
+.delete-order-btn:hover {
+    background-color: #cc0000;}

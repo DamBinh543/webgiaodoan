@@ -8,11 +8,10 @@ function toast({
     const main = document.getElementById('toast');
     if(main){
         const toast = document.createElement('div');
-        //Auto remove toast
+
         const autoRemove = setTimeout(function(){
             main.removeChild(toast);
         },duration+1000);
-        //Remove toast when click btn close
         toast.onclick = function(e){
             if(e.target.closest('.fa-regular')){
                 main.removeChild(toast);
