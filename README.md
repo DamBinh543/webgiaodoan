@@ -15,6 +15,7 @@ Cách chạy dự án:
 ---
 
 
+
 # Đăng kí, đăng nhập
 
 <img width="1920" height="1032" alt="dangky" src="https://github.com/user-attachments/assets/5d7c94e0-0e42-4bf0-a719-53442b36ecc4" />
@@ -24,11 +25,13 @@ Cách chạy dự án:
 ---
 
 
+
 # Chi tiết sản phẩm
 
 <img width="1920" height="1032" alt="chitietsanpham" src="https://github.com/user-attachments/assets/2a96cd2f-deb3-43da-b46b-82fe1be799ba" />
 
 ---
+
 
 
 # Giỏ hàng
@@ -38,11 +41,13 @@ Cách chạy dự án:
 ---
 
 
+
 # Đặt hàng
 
 <img width="1920" height="1032" alt="thanhtoan" src="https://github.com/user-attachments/assets/2f8f4fcd-59c4-40dd-9227-9070975bb4f8" />
 
 ---
+
 
 
 # Xem đơn hàng
@@ -54,11 +59,13 @@ Cách chạy dự án:
 ---
 
 
+
 # Thông tin khách hàng
 
 <img width="1920" height="1032" alt="doithongtin" src="https://github.com/user-attachments/assets/67688a04-71a0-48e3-b06e-a36694e6bfbb" />
 
 ---
+
 
 
 # Bình luận, đánh giá
@@ -68,11 +75,13 @@ Cách chạy dự án:
 ---
 
 
+
 # Trang Admin
 
 <img width="1920" height="1032" alt="tongquan" src="https://github.com/user-attachments/assets/58c05273-cd82-4c0c-9f7d-d209488e70b2" />
 
 ---
+
 
 
 # Quản lý sản phẩm
@@ -86,6 +95,7 @@ Cách chạy dự án:
 ---
 
 
+
 # Quản lý đơn hàng
 
 <img width="1920" height="1032" alt="qldh" src="https://github.com/user-attachments/assets/ecf159c5-701e-4552-a265-c25b369bba30" />
@@ -93,11 +103,13 @@ Cách chạy dự án:
 ---
 
 
+
 # Quản lý khách hàng
 
 <img width="1920" height="1032" alt="qlkh" src="https://github.com/user-attachments/assets/aa48ed94-2d01-43bf-98a9-907189da3bf4" />
 
 ---
+
 
 
 # Thống kê
