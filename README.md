@@ -8,8 +8,10 @@ Cách chạy dự án:
 - Chạy php artisan serve
 
 
+
 Trang chủ
 <img width="1920" height="1032" alt="taikhoanadmin" src="https://github.com/user-attachments/assets/cd8eda02-fedc-47d9-b4f2-12ac1024a3de" />
+
 
 
 Đăng kí, đăng nhập
@@ -17,24 +19,32 @@ Trang chủ
 <img width="1920" height="1032" alt="dangnhap" src="https://github.com/user-attachments/assets/dd67e8d7-c5cb-4978-9406-2e40b3dcc8c9" />
 
 
+
 Chi tiết sản phẩm
 <img width="1920" height="1032" alt="chitietsanpham" src="https://github.com/user-attachments/assets/2a96cd2f-deb3-43da-b46b-82fe1be799ba" />
+
 
 
 Giỏ hàng
 <img width="1920" height="1032" alt="giohang" src="https://github.com/user-attachments/assets/66e78187-19e7-43ff-be33-c2564686be7e" />
 
 
+
 Đặt hàng
 <img width="1920" height="1032" alt="thanhtoan" src="https://github.com/user-attachments/assets/2f8f4fcd-59c4-40dd-9227-9070975bb4f8" />
+
 
 
 Xem đon hàng 
 <img width="1920" height="1032" alt="donhangkhach" src="https://github.com/user-attachments/assets/53e1c25f-a4f8-4d23-9864-987af818f4ba" />
 <img width="1920" height="1032" alt="chitietdonhang" src="https://github.com/user-attachments/assets/c9ae7fff-85e1-485e-9f73-e8f72f1d32e3" />
 
+
+
 Thông tin khách hàng
 <img width="1920" height="1032" alt="doithongtin" src="https://github.com/user-attachments/assets/67688a04-71a0-48e3-b06e-a36694e6bfbb" />
+
+
 
 
 
@@ -42,8 +52,12 @@ Bình luận, đánh giá
 <img width="1920" height="1032" alt="binhluan" src="https://github.com/user-attachments/assets/40dd3367-a44e-4a1a-81bc-52d913d297c4" />
 
 
+
+
 Trang Admin
 <img width="1920" height="1032" alt="tongquan" src="https://github.com/user-attachments/assets/58c05273-cd82-4c0c-9f7d-d209488e70b2" />
+
+
 
 
 Quản lý sản phẩm
@@ -52,12 +66,18 @@ Quản lý sản phẩm
 <img width="1920" height="1032" alt="suasp" src="https://github.com/user-attachments/assets/a4b98556-2390-4ae0-92b8-e36956f78ba3" />
 
 
+
+
 Quản lý đon hàng
 <img width="1920" height="1032" alt="qldh" src="https://github.com/user-attachments/assets/ecf159c5-701e-4552-a265-c25b369bba30" />
 
 
+
+
 Quản lý Khách hàng
 <img width="1920" height="1032" alt="qlkh" src="https://github.com/user-attachments/assets/aa48ed94-2d01-43bf-98a9-907189da3bf4" />
+
+
 
 
 Thống kê
