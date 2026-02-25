@@ -3,7 +3,7 @@ Cách chạy dự án:
 - Mở dự án đã clone, mở terminal chạy: composer install
 - Chạy: php artisan key:generate
 - Tạo databasetrên MySQl
-- Sửa cấu hình env, thay tên database vừa tạo
+- Sửa cấu hình env, đổi tên thành database vừa tạo
 - Mở Terminal chạy lệnh php artisan migrate --seed
 - Chạy php artisan serve
 
